@@ -16,6 +16,7 @@ source:
     - 0005-Switch-struct-packing-to-command-that-is-compatible-.patch
     - 0006-Use-std-popcount-instead-of-__builtin_popcount-for-p.patch
     - 0007-Use-unlikely-attribute-instead-of-__builtin_expect-f.patch
+    - 0008-Use-.data-instead-of-.begin-on-std-array-when-a-poin.patch
 
 build:
   number: 1

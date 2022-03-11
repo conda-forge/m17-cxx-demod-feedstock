@@ -12,7 +12,7 @@ source:
   url: https://github.com/n1ai/m17-cxx-demod/archive/refs/tags/v{{ version }}.tar.gz
   sha256: 8f4b48e4714691a9b44880e839659952fd8d5d3857b4518eb275e769e9936d53
   patches:
-    - 0004-Specify-standards-conformance-mode-for-MSVC.patch
+    - 0004-Specify-compilation-options-definitions-for-MSVC.patch
 
 build:
   number: 1

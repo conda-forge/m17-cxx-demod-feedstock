@@ -31,9 +31,9 @@ requirements:
     - pkg-config
   host:
     - boost-cpp
-    - codec2
     - gtest
     - gmock
+    - libcodec2
   run:
     - boost-cpp
 

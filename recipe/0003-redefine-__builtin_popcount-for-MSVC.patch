@@ -1,0 +1,62 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: n1ai <dcherkus@yahoo.com>
+Date: Mon, 28 Feb 2022 13:31:53 -0500
+Subject: [PATCH] redefine __builtin_popcount for MSVC
+
+---
+ include/m17cxx/Convolution.h     | 5 +++++
+ include/m17cxx/Golay24.h         | 5 +++++
+ include/m17cxx/M17Synchronizer.h | 5 +++++
+ 3 files changed, 15 insertions(+)
+
+diff --git a/include/m17cxx/Convolution.h b/include/m17cxx/Convolution.h
+index 4f28b18..e84eeac 100644
+--- a/include/m17cxx/Convolution.h
++++ b/include/m17cxx/Convolution.h
+@@ -5,6 +5,11 @@
+ #include <cstdint>
+ #include <cstddef>
+ 
++#ifdef _MSC_VER
++#  include <intrin.h>
++#  define __builtin_popcount __popcnt
++#endif
++
+ namespace mobilinkd
+ {
+ 
+diff --git a/include/m17cxx/Golay24.h b/include/m17cxx/Golay24.h
+index 58c2f0f..d2d8512 100644
+--- a/include/m17cxx/Golay24.h
++++ b/include/m17cxx/Golay24.h
+@@ -8,6 +8,11 @@
+ #include <algorithm>
+ #include <utility>
+ 
++#ifdef _MSC_VER
++#  include <intrin.h>
++#  define __builtin_popcount __popcnt
++#endif
++
+ namespace mobilinkd {
+ 
+ // Parts are adapted from:
+diff --git a/include/m17cxx/M17Synchronizer.h b/include/m17cxx/M17Synchronizer.h
+index 1861ed3..c7db653 100644
+--- a/include/m17cxx/M17Synchronizer.h
++++ b/include/m17cxx/M17Synchronizer.h
+@@ -4,6 +4,11 @@
+ 
+ #include <cstdint>
+ 
++#ifdef _MSC_VER
++#  include <intrin.h>
++#  define __builtin_popcount __popcnt
++#endif
++
+ namespace mobilinkd
+ {
+ 
+-- 
+2.35.0
+

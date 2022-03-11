@@ -6,12 +6,16 @@ package:
   version: {{ version }}
 
 source:
+  # Note: we mistakenly created this feedstock with the url pointing at n1ai's
+  # fork and not the upstream mobilinkd source. Once the next official version
+  # is release, we need to update the URL to use it!
   url: https://github.com/n1ai/m17-cxx-demod/archive/refs/tags/v{{ version }}.tar.gz
   sha256: 8f4b48e4714691a9b44880e839659952fd8d5d3857b4518eb275e769e9936d53
+  patches:
+    - 0004-Specify-standards-conformance-mode-for-MSVC.patch
 
 build:
-  number: 0
-  skip: true  # [win]
+  number: 1
 
 requirements:
   build:
@@ -44,7 +48,7 @@ about:
   license_file: LICENSE
   summary: M17 Modulator & Demodulator in C++ (GPL)
   description: |
-    m17-cxx-demod from mobilinkd has programs that modulate or demodulate data according to the M17 specification https://m17-project.github.io/M17_spec 
+    m17-cxx-demod from mobilinkd has programs that modulate or demodulate data according to the M17 specification https://m17-project.github.io/M17_spec
   doc_url: https://github.com/mobilinkd/m17-cxx-demod/blob/master/README.md
   dev_url: https://github.com/mobilinkd/m17-cxx-demod
 

@@ -14,6 +14,7 @@ source:
   patches:
     - 0004-Specify-compilation-options-definitions-for-MSVC.patch
     - 0005-Switch-struct-packing-to-command-that-is-compatible-.patch
+    - 0006-Use-std-popcount-instead-of-__builtin_popcount-for-p.patch
 
 build:
   number: 1

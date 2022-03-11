@@ -1,0 +1,152 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Ryan Volz <ryan.volz@gmail.com>
+Date: Fri, 11 Mar 2022 13:56:26 -0500
+Subject: [PATCH] Use std::popcount instead of __builtin_popcount for
+ portability.
+
+This requires C++20, which should be supported by all of the relevant
+compilers.
+---
+ CMakeLists.txt                   |  2 +-
+ include/m17cxx/Convolution.h     |  8 ++------
+ include/m17cxx/Golay24.h         | 10 +++-------
+ include/m17cxx/M17Synchronizer.h | 14 +++++---------
+ src/CMakeLists.txt               |  2 +-
+ 5 files changed, 12 insertions(+), 24 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7319927..791243b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -5,7 +5,7 @@ project(m17cxx
+     DESCRIPTION "M17 Digital Voice modulation and demodulation"
+     LANGUAGES CXX)
+ 
+-set(CMAKE_CXX_STANDARD 17)
++set(CMAKE_CXX_STANDARD 20)
+ 
+ # Require out-of-source builds
+ file(TO_CMAKE_PATH "${PROJECT_BINARY_DIR}/CMakeLists.txt" LOC_PATH)
+diff --git a/include/m17cxx/Convolution.h b/include/m17cxx/Convolution.h
+index e84eeac..fd4fffb 100644
+--- a/include/m17cxx/Convolution.h
++++ b/include/m17cxx/Convolution.h
+@@ -2,20 +2,16 @@
+ 
+ #pragma once
+ 
++#include <bit>
+ #include <cstdint>
+ #include <cstddef>
+ 
+-#ifdef _MSC_VER
+-#  include <intrin.h>
+-#  define __builtin_popcount __popcnt
+-#endif
+-
+ namespace mobilinkd
+ {
+ 
+ inline constexpr uint32_t convolve_bit(uint32_t poly, uint32_t memory)
+ {
+-    return __builtin_popcount(poly & memory) & 1;
++    return std::popcount(poly & memory) & 1;
+ }
+ 
+ template <size_t K, size_t k = 1>
+diff --git a/include/m17cxx/Golay24.h b/include/m17cxx/Golay24.h
+index 0c829b8..20ee171 100644
+--- a/include/m17cxx/Golay24.h
++++ b/include/m17cxx/Golay24.h
+@@ -4,15 +4,11 @@
+ #pragma once
+ 
+ #include <array>
++#include <bit>
+ #include <cstdint>
+ #include <algorithm>
+ #include <utility>
+ 
+-#ifdef _MSC_VER
+-#  include <intrin.h>
+-#  define __builtin_popcount __popcnt
+-#endif
+-
+ namespace mobilinkd {
+ 
+ // Parts are adapted from:
+@@ -117,7 +113,7 @@ constexpr uint32_t syndrome(uint32_t codeword)
+ 
+ constexpr bool parity(uint32_t codeword)
+ {
+-    return __builtin_popcount(codeword) & 1;
++    return std::popcount(codeword) & 1;
+ }
+ 
+ constexpr SyndromeMapEntry makeSyndromeMapEntry(uint64_t val)
+@@ -219,7 +215,7 @@ bool decode(uint32_t input, uint32_t& output)
+         // Apply the correction to the input.
+         output = input ^ correction;
+         // Only test parity for 3-bit errors.
+-        return __builtin_popcount(syndrm) < 3 || !parity(output);
++        return std::popcount(syndrm) < 3 || !parity(output);
+     }
+ 
+     return false;
+diff --git a/include/m17cxx/M17Synchronizer.h b/include/m17cxx/M17Synchronizer.h
+index c7db653..9b1bef5 100644
+--- a/include/m17cxx/M17Synchronizer.h
++++ b/include/m17cxx/M17Synchronizer.h
+@@ -2,13 +2,9 @@
+ 
+ #pragma once
+ 
++#include <bit>
+ #include <cstdint>
+ 
+-#ifdef _MSC_VER
+-#  include <intrin.h>
+-#  define __builtin_popcount __popcnt
+-#endif
+-
+ namespace mobilinkd
+ {
+ 
+@@ -21,17 +17,17 @@ struct M17Synchronizer
+     M17Synchronizer(uint16_t word = 0x3243, int bit_errors = 1)
+     : expected_(word), allowable_errors_(bit_errors)
+     {}
+-    
++
+     bool operator()(int bits)
+     {
+         // Add one symbol (2 bits) of data to the synchronizer.
+         // Returns true when a sync word has been detected.
+-        
++
+         buffer_ = ((buffer_ << 2) | bits) & 0xFFFF;
+         auto tmp = buffer_ ^ expected_;
+-        return __builtin_popcount(tmp) <= allowable_errors_;
++        return std::popcount(tmp) <= allowable_errors_;
+     }
+-    
++
+     void reset() { buffer_ = 0; }
+ };
+ 
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 1cb8733..12a375d 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -5,7 +5,7 @@ target_include_directories(m17cxx INTERFACE
+     $<INSTALL_INTERFACE:include>
+     )
+ 
+-target_compile_features(m17cxx INTERFACE cxx_std_17)
++target_compile_features(m17cxx INTERFACE cxx_std_20)
+ 
+ if(MSVC)
+     # specify standards-conformance mode
+-- 
+2.35.0
+

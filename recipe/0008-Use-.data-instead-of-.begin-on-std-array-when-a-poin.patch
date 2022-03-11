@@ -7,28 +7,14 @@ Subject: [PATCH] Use .data() instead of .begin() on std::array when a pointer
 Using .begin() returns an iterator, which MSVC is having trouble casting
 to a pointer as needed.
 ---
- apps/m17-demod.cpp | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ apps/m17-demod.cpp         | 12 ++++++------
+ include/m17cxx/M17Framer.h |  4 ++--
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/apps/m17-demod.cpp b/apps/m17-demod.cpp
-index b26fad8..23edd02 100644
+index b26fad8..0dd7649 100644
 --- a/apps/m17-demod.cpp
 +++ b/apps/m17-demod.cpp
-@@ -130,12 +130,12 @@ bool dump_lsf(std::array<T, N> const& lsf)
- 
-     if (display_lsf)
-     {
--        std::copy(lsf.begin() + 6, lsf.begin() + 12, encoded_call.begin());
-+        std::copy(lsf.data() + 6, lsf.data() + 12, encoded_call.data());
-         auto src = LinkSetupFrame::decode_callsign(encoded_call);
-         std::cerr << "\nSRC: ";
-         for (auto x : src) if (x) std::cerr << x;
- 
--        std::copy(lsf.begin(), lsf.begin() + 6, encoded_call.begin());
-+        std::copy(lsf.data(), lsf.data() + 6, encoded_call.data());
-         auto dest = LinkSetupFrame::decode_callsign(encoded_call);
-         std::cerr << ", DEST: ";
-         for (auto x : dest) if (x) std::cerr << x;
 @@ -190,15 +190,15 @@ bool demodulate_audio(mobilinkd::M17FrameDecoder::audio_buffer_t const& audio, i
      if (noise_blanker && viterbi_cost > 80)
      {
@@ -51,6 +37,28 @@ index b26fad8..23edd02 100644
      }
  
      return result;
+diff --git a/include/m17cxx/M17Framer.h b/include/m17cxx/M17Framer.h
+index c87fa04..c80365e 100644
+--- a/include/m17cxx/M17Framer.h
++++ b/include/m17cxx/M17Framer.h
+@@ -32,7 +32,7 @@ struct M17Framer
+         if (index_ == N)
+         {
+             index_ = 0;
+-            *result = buffer_.begin();
++            *result = buffer_.data();
+             return N;
+         }
+         return 0;
+@@ -46,7 +46,7 @@ struct M17Framer
+         if (index_ == N)
+         {
+             index_ = 0;
+-            *result = buffer_.begin();
++            *result = buffer_.data();
+             return N;
+         }
+         return 0;
 -- 
 2.35.0
 

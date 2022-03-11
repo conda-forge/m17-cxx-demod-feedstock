@@ -12,7 +12,8 @@ compilers.
  include/m17cxx/Golay24.h         | 10 +++-------
  include/m17cxx/M17Synchronizer.h | 14 +++++---------
  src/CMakeLists.txt               |  2 +-
- 5 files changed, 12 insertions(+), 24 deletions(-)
+ tests/UtilTest.cpp               |  3 ++-
+ 6 files changed, 14 insertions(+), 25 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 index 7319927..791243b 100644
@@ -147,6 +148,27 @@ index 1cb8733..12a375d 100644
  
  if(MSVC)
      # specify standards-conformance mode
+diff --git a/tests/UtilTest.cpp b/tests/UtilTest.cpp
+index 4adebe2..ade718e 100644
+--- a/tests/UtilTest.cpp
++++ b/tests/UtilTest.cpp
+@@ -2,6 +2,7 @@
+ 
+ #include <gtest/gtest.h>
+ 
++#include <bit>
+ #include <cstdint>
+ 
+ int main(int argc, char **argv) {
+@@ -210,7 +211,7 @@ TEST_F(UtilTest, PRBS9)
+     uint16_t lfsr = 0x100;
+ 
+     for (size_t i = 0; i != 511; ++i) {
+-        lfsr = ((__builtin_popcount(lfsr & 0x11) & 1) << 8) | (lfsr >> 1);
++        lfsr = ((std::popcount(lfsr & 0x11) & 1) << 8) | (lfsr >> 1);
+         bool p = (lfsr & 0x100) == 0x100;
+         bool n = prbs.generate();
+         EXPECT_EQ(p,n) << "i = " << i;
 -- 
 2.35.0
 

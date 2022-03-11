@@ -13,6 +13,7 @@ source:
   sha256: 8f4b48e4714691a9b44880e839659952fd8d5d3857b4518eb275e769e9936d53
   patches:
     - 0004-Specify-compilation-options-definitions-for-MSVC.patch
+    - 0005-Switch-struct-packing-to-command-that-is-compatible-.patch
 
 build:
   number: 1

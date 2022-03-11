@@ -1,0 +1,32 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Ryan Volz <ryan.volz@gmail.com>
+Date: Fri, 11 Mar 2022 12:33:03 -0500
+Subject: [PATCH] Switch struct packing to command that is compatible with
+ MSVC.
+
+---
+ include/m17cxx/Golay24.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/include/m17cxx/Golay24.h b/include/m17cxx/Golay24.h
+index d2d8512..0c829b8 100644
+--- a/include/m17cxx/Golay24.h
++++ b/include/m17cxx/Golay24.h
+@@ -90,11 +90,13 @@ constexpr array<T, N> sort(array<T, N> array)
+ // static constexpr uint16_t POLY = 0xAE3;
+ constexpr uint16_t POLY = 0xC75;
+ 
+-struct __attribute__((packed)) SyndromeMapEntry
++#pragma pack(push, 1)
++struct SyndromeMapEntry
+ {
+     uint32_t a{0};
+     uint16_t b{0};
+ };
++#pragma pack(pop)
+ 
+ /**
+  * Calculate the syndrome of a [23,12] Golay codeword.
+-- 
+2.35.0
+

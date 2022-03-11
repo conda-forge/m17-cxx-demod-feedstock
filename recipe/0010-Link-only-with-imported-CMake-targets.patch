@@ -1,0 +1,117 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Ryan Volz <ryan.volz@gmail.com>
+Date: Fri, 11 Mar 2022 18:18:20 -0500
+Subject: [PATCH] Link only with imported CMake targets.
+
+This switches to using Boost::program_options and GTest::GTest targets
+where appropriate. GTest::GTest replaces linking with both the "gtest"
+and "pthread" libraries, and fixes linking on Windows by actually using
+Threads::Threads instead of "pthread"
+---
+ apps/CMakeLists.txt  |  4 ++--
+ tests/CMakeLists.txt | 32 ++++++++++++++++----------------
+ 2 files changed, 18 insertions(+), 18 deletions(-)
+
+diff --git a/apps/CMakeLists.txt b/apps/CMakeLists.txt
+index 1d80242..ea00798 100644
+--- a/apps/CMakeLists.txt
++++ b/apps/CMakeLists.txt
+@@ -1,7 +1,7 @@
+ add_executable(m17-demod m17-demod.cpp)
+-target_link_libraries(m17-demod PRIVATE m17cxx codec2 ${Boost_LIBRARIES})
++target_link_libraries(m17-demod PRIVATE m17cxx codec2 Boost::program_options)
+ 
+ add_executable(m17-mod m17-mod.cpp)
+-target_link_libraries(m17-mod PRIVATE m17cxx codec2 ${Boost_LIBRARIES} Threads::Threads)
++target_link_libraries(m17-mod PRIVATE m17cxx codec2 Boost::program_options Threads::Threads)
+ 
+ install(TARGETS m17-demod m17-mod RUNTIME DESTINATION bin)
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+index 3937534..ff79e6d 100644
+--- a/tests/CMakeLists.txt
++++ b/tests/CMakeLists.txt
+@@ -6,65 +6,65 @@ include_directories (
+ )
+ 
+ add_executable (ConvolutionTest ConvolutionTest.cpp)
+-target_link_libraries(ConvolutionTest m17cxx gtest pthread)
++target_link_libraries(ConvolutionTest m17cxx GTest::GTest)
+ gtest_add_tests(ConvolutionTest "" AUTO)
+ 
+ add_executable (M17FramerTest M17FramerTest.cpp)
+-target_link_libraries(M17FramerTest m17cxx gtest pthread)
++target_link_libraries(M17FramerTest m17cxx GTest::GTest)
+ gtest_add_tests(M17FramerTest "" AUTO)
+ 
+ add_executable (TrellisTest TrellisTest.cpp)
+-target_link_libraries(TrellisTest m17cxx gtest pthread)
++target_link_libraries(TrellisTest m17cxx GTest::GTest)
+ gtest_add_tests(TrellisTest "" AUTO)
+ 
+ add_executable (ViterbiTest ViterbiTest.cpp)
+-target_link_libraries(ViterbiTest m17cxx gtest pthread)
++target_link_libraries(ViterbiTest m17cxx GTest::GTest)
+ gtest_add_tests(ViterbiTest "" AUTO)
+ 
+ add_executable (Golay24Test Golay24Test.cpp)
+-target_link_libraries(Golay24Test m17cxx gtest pthread)
++target_link_libraries(Golay24Test m17cxx GTest::GTest)
+ gtest_add_tests(Golay24Test "" AUTO)
+ 
+ add_executable (CRC16Test CRC16Test.cpp)
+-target_link_libraries(CRC16Test m17cxx gtest pthread)
++target_link_libraries(CRC16Test m17cxx GTest::GTest)
+ gtest_add_tests(CRC16Test "" AUTO)
+ 
+ add_executable (M17RandomizerTest M17RandomizerTest.cpp)
+-target_link_libraries(M17RandomizerTest m17cxx gtest pthread)
++target_link_libraries(M17RandomizerTest m17cxx GTest::GTest)
+ gtest_add_tests(M17RandomizerTest "" AUTO)
+ 
+ add_executable (PolynomialInterleaverTest PolynomialInterleaverTest.cpp)
+-target_link_libraries(PolynomialInterleaverTest m17cxx gtest pthread)
++target_link_libraries(PolynomialInterleaverTest m17cxx GTest::GTest)
+ gtest_add_tests(PolynomialInterleaverTest "" AUTO)
+ 
+ add_executable (M17ModulatorTest M17ModulatorTest.cpp)
+-target_link_libraries(M17ModulatorTest m17cxx gtest pthread codec2)
++target_link_libraries(M17ModulatorTest m17cxx GTest::GTest codec2)
+ gtest_add_tests(M17ModulatorTest "" AUTO)
+ 
+ add_executable (UtilTest UtilTest.cpp)
+-target_link_libraries(UtilTest m17cxx gtest pthread)
++target_link_libraries(UtilTest m17cxx GTest::GTest)
+ gtest_add_tests(UtilTest "" AUTO)
+ 
+ add_executable (LinkSetupFrameTest LinkSetupFrameTest.cpp)
+-target_link_libraries(LinkSetupFrameTest m17cxx gtest pthread)
++target_link_libraries(LinkSetupFrameTest m17cxx GTest::GTest)
+ gtest_add_tests(LinkSetupFrameTest "" AUTO)
+ 
+ add_executable (SlidingDFTTest SlidingDFTTest.cpp)
+-target_link_libraries(SlidingDFTTest m17cxx gtest pthread)
++target_link_libraries(SlidingDFTTest m17cxx GTest::GTest)
+ gtest_add_tests(SlidingDFTTest "" AUTO)
+ 
+ add_executable (DataCarrierDetectTest DataCarrierDetectTest.cpp)
+-target_link_libraries(DataCarrierDetectTest m17cxx gtest pthread)
++target_link_libraries(DataCarrierDetectTest m17cxx GTest::GTest)
+ gtest_add_tests(DataCarrierDetectTest "" AUTO)
+ 
+ add_executable (ClockRecoveryTest ClockRecoveryTest.cpp)
+-target_link_libraries(ClockRecoveryTest m17cxx gtest pthread)
++target_link_libraries(ClockRecoveryTest m17cxx GTest::GTest)
+ gtest_add_tests(ClockRecoveryTest "" AUTO)
+ 
+ add_executable (FreqDevEstimatorTest FreqDevEstimatorTest.cpp)
+-target_link_libraries(FreqDevEstimatorTest m17cxx gtest pthread)
++target_link_libraries(FreqDevEstimatorTest m17cxx GTest::GTest)
+ gtest_add_tests(FreqDevEstimatorTest "" AUTO)
+ 
+ add_executable (CorrelatorTest CorrelatorTest.cpp)
+-target_link_libraries(CorrelatorTest m17cxx gtest pthread)
++target_link_libraries(CorrelatorTest m17cxx GTest::GTest)
+ gtest_add_tests(CorrelatorTest "" AUTO)
+-- 
+2.35.0
+

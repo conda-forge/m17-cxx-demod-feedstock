@@ -17,6 +17,7 @@ source:
     - 0006-Use-std-popcount-instead-of-__builtin_popcount-for-p.patch
     - 0007-Use-unlikely-attribute-instead-of-__builtin_expect-f.patch
     - 0008-Use-.data-instead-of-.begin-on-std-array-when-a-poin.patch
+    - 0009-Switch-to-use-find_package-for-codec2-link-with-code.patch
 
 build:
   number: 1

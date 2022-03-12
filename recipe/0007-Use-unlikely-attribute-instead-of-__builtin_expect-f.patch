@@ -1,0 +1,55 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Ryan Volz <ryan.volz@gmail.com>
+Date: Fri, 11 Mar 2022 14:32:18 -0500
+Subject: [PATCH] Use [[unlikely]] attribute instead of __builtin_expect for
+ portability.
+
+This requires C++20.
+---
+ include/m17cxx/ClockRecovery.h  | 6 +++---
+ include/m17cxx/M17Demodulator.h | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/include/m17cxx/ClockRecovery.h b/include/m17cxx/ClockRecovery.h
+index 611d2b4..37529e6 100644
+--- a/include/m17cxx/ClockRecovery.h
++++ b/include/m17cxx/ClockRecovery.h
+@@ -104,11 +104,11 @@ class ClockRecovery
+         int8_t offset = sample_index_ - prev_sample_index_;
+ 
+         // When in spec, the clock should drift by less than 1 sample per frame.
+-        if (__builtin_expect(offset >= MAX_OFFSET, 0))
++        if (offset >= MAX_OFFSET) [[unlikely]]
+         {
+             offset -= SAMPLES_PER_SYMBOL;
+         }
+-        else if (__builtin_expect(offset <= -MAX_OFFSET, 0))
++        else if (offset <= -MAX_OFFSET) [[unlikely]]
+         {
+             offset += SAMPLES_PER_SYMBOL;
+         }
+@@ -120,7 +120,7 @@ class ClockRecovery
+     {
+         // update_sample_index_() must be called first.
+ 
+-        if (__builtin_expect((frame_count_ == 0), 0))
++        if (frame_count_ == 0) [[unlikely]]
+         {
+             prev_sample_index_ = sample_index_;
+             offset_ = 0.0;
+diff --git a/include/m17cxx/M17Demodulator.h b/include/m17cxx/M17Demodulator.h
+index 7970ed1..16b12a1 100644
+--- a/include/m17cxx/M17Demodulator.h
++++ b/include/m17cxx/M17Demodulator.h
+@@ -556,7 +556,7 @@ void M17Demodulator<FloatType>::operator()(const FloatType input)
+ 
+ 	// We need to pump a few ms of data through on startup to initialize
+ 	// the demodulator.
+-	if (__builtin_expect((initializing), 0))
++	if (initializing) [[unlikely]]
+ 	{
+ 		--initializing;
+ 		initialize(input);
+-- 
+2.35.0
+

@@ -1,0 +1,34 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Ryan Volz <ryan.volz@gmail.com>
+Date: Mon, 28 Feb 2022 14:36:39 -0500
+Subject: [PATCH] Specify compilation options/definitions for MSVC.
+
+MSVC doesn't allow the plain language logic keywords by default (e.g.
+"and"), and specifying standards-conformance mode fixes that.
+
+MSVC doesn't define math constants like M_PI by default. Defining
+_USE_MATH_DEFINES fixes that.
+---
+ src/CMakeLists.txt | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index c402b40..1cb8733 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -7,6 +7,12 @@ target_include_directories(m17cxx INTERFACE
+ 
+ target_compile_features(m17cxx INTERFACE cxx_std_17)
+ 
++if(MSVC)
++    # specify standards-conformance mode
++    target_compile_options(m17cxx INTERFACE /permissive-)
++    target_compile_definitions(m17cxx INTERFACE _USE_MATH_DEFINES)
++endif()
++
+ source_group(
+     TREE "${PROJECT_SOURCE_DIR}/include"
+     PREFIX "Header Files"
+-- 
+2.35.0
+

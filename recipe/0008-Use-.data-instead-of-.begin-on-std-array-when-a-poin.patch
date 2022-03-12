@@ -1,0 +1,64 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Ryan Volz <ryan.volz@gmail.com>
+Date: Fri, 11 Mar 2022 16:39:59 -0500
+Subject: [PATCH] Use .data() instead of .begin() on std::array when a pointer
+ is needed.
+
+Using .begin() returns an iterator, which MSVC is having trouble casting
+to a pointer as needed.
+---
+ apps/m17-demod.cpp         | 12 ++++++------
+ include/m17cxx/M17Framer.h |  4 ++--
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/apps/m17-demod.cpp b/apps/m17-demod.cpp
+index b26fad8..0dd7649 100644
+--- a/apps/m17-demod.cpp
++++ b/apps/m17-demod.cpp
+@@ -190,15 +190,15 @@ bool demodulate_audio(mobilinkd::M17FrameDecoder::audio_buffer_t const& audio, i
+     if (noise_blanker && viterbi_cost > 80)
+     {
+         buf.fill(0);
+-        std::cout.write((const char*)buf.begin(), 320);
+-        std::cout.write((const char*)buf.begin(), 320);
++        std::cout.write((const char*)buf.data(), 320);
++        std::cout.write((const char*)buf.data(), 320);
+     }
+     else
+     {
+-        codec2_decode(codec2, buf.begin(), audio.begin() + 2);
+-        std::cout.write((const char*)buf.begin(), 320);
+-        codec2_decode(codec2, buf.begin(), audio.begin() + 10);
+-        std::cout.write((const char*)buf.begin(), 320);
++        codec2_decode(codec2, buf.data(), audio.data() + 2);
++        std::cout.write((const char*)buf.data(), 320);
++        codec2_decode(codec2, buf.data(), audio.data() + 10);
++        std::cout.write((const char*)buf.data(), 320);
+     }
+ 
+     return result;
+diff --git a/include/m17cxx/M17Framer.h b/include/m17cxx/M17Framer.h
+index c87fa04..c80365e 100644
+--- a/include/m17cxx/M17Framer.h
++++ b/include/m17cxx/M17Framer.h
+@@ -32,7 +32,7 @@ struct M17Framer
+         if (index_ == N)
+         {
+             index_ = 0;
+-            *result = buffer_.begin();
++            *result = buffer_.data();
+             return N;
+         }
+         return 0;
+@@ -46,7 +46,7 @@ struct M17Framer
+         if (index_ == N)
+         {
+             index_ = 0;
+-            *result = buffer_.begin();
++            *result = buffer_.data();
+             return N;
+         }
+         return 0;
+-- 
+2.35.0
+

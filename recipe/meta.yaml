@@ -1,17 +1,21 @@
 {% set name = "m17-cxx-demod" %}
+# Note: we mistakenly created this feedstock with the url pointing at n1ai's
+# fork with a version that is not from the upstream mobilinkd source. Once the
+# next official version is released, we need to sync the version.
 {% set version = "2.3.3" %}
+{% set tag_version = ".".join(version.split(".", 2)[:2]) %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  # Note: we mistakenly created this feedstock with the url pointing at n1ai's
-  # fork and not the upstream mobilinkd source. Once the next official version
-  # is release, we need to update the URL to use it!
-  url: https://github.com/n1ai/m17-cxx-demod/archive/refs/tags/v{{ version }}.tar.gz
-  sha256: 8f4b48e4714691a9b44880e839659952fd8d5d3857b4518eb275e769e9936d53
+  url: https://github.com/mobilinkd/m17-cxx-demod/archive/refs/tags/v{{ tag_version }}.tar.gz
+  sha256: 5dac28a7aa0c252e06b1ef1723acf0ddb6630a2a8ede07f15809cd2faef0b367
   patches:
+    - 0001-avoid-experimental-array-and-MAX_INPUT.patch
+    - 0002-avoid-experimental-array-in-apps-dir.patch
+    - 0003-redefine-__builtin_popcount-for-MSVC.patch
     - 0004-Specify-compilation-options-definitions-for-MSVC.patch
     - 0005-Switch-struct-packing-to-command-that-is-compatible-.patch
     - 0006-Use-std-popcount-instead-of-__builtin_popcount-for-p.patch

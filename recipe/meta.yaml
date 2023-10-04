@@ -25,7 +25,7 @@ source:
     - 0010-Link-only-with-imported-CMake-targets.patch
 
 build:
-  number: 2
+  number: 3
 
 requirements:
   build:
@@ -35,12 +35,11 @@ requirements:
     - ninja
     - pkg-config
   host:
-    - boost-cpp
+    - libboost-devel
     - gtest
     - gmock
     - libcodec2
   run:
-    - boost-cpp
 
 test:
   commands:

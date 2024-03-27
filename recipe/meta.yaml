@@ -25,11 +25,12 @@ source:
     - 0010-Link-only-with-imported-CMake-targets.patch
 
 build:
-  number: 3
+  number: 4
 
 requirements:
   build:
     - {{ compiler('c') }}
+    - {{ stdlib("c") }}
     - {{ compiler('cxx') }}
     - cmake >=3.9
     - ninja

@@ -23,9 +23,10 @@ source:
     - 0008-Use-.data-instead-of-.begin-on-std-array-when-a-poin.patch
     - 0009-Switch-to-use-find_package-for-codec2-link-with-code.patch
     - 0010-Link-only-with-imported-CMake-targets.patch
+    - 0011-include-m17cxx-Util.h-add-missing-cstdint-include.patch
 
 build:
-  number: 5
+  number: 6
 
 requirements:
   build:

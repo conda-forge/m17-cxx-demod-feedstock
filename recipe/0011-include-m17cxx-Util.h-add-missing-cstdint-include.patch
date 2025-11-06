@@ -1,0 +1,34 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Sergei Trofimovich <slyich@gmail.com>
+Date: Wed, 24 Jan 2024 10:51:48 +0000
+Subject: [PATCH] include/m17cxx/Util.h: add missing `<cstdint>` include
+
+Without the change build fails on `gcc-13 `as:
+
+    In file included from /build/source/apps/m17-mod.cpp:3:
+    /build/source/include/m17cxx/Util.h:213:47: error: 'uint8_t' was not declared in this scope
+      213 | constexpr bool get_bit_index(const std::array<uint8_t, N>& input, size_t index)
+          |                                               ^~~~~~~
+    /build/source/include/m17cxx/Util.h:12:1: note: 'uint8_t' is defined in header '<cstdint>'; did you forget to '#include <cstdint>'?
+       11 | #include <limits>
+      +++ |+#include <cstdint>
+       12 |
+---
+ include/m17cxx/Util.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/m17cxx/Util.h b/include/m17cxx/Util.h
+index 7aca344..f29ace8 100644
+--- a/include/m17cxx/Util.h
++++ b/include/m17cxx/Util.h
+@@ -3,6 +3,7 @@
+ #pragma once
+ 
+ #include <algorithm>
++#include <cstdint>
+ #include <cstdlib>
+ #include <cassert>
+ #include <array>
+-- 
+2.51.0
+

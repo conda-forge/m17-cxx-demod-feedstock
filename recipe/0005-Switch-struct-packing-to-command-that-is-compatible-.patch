@@ -28,5 +28,5 @@ index d2d8512..0c829b8 100644
  /**
   * Calculate the syndrome of a [23,12] Golay codeword.
 -- 
-2.35.1
+2.51.0
 

@@ -26,7 +26,7 @@ source:
     - 0011-include-m17cxx-Util.h-add-missing-cstdint-include.patch
 
 build:
-  number: 6
+  number: 7
 
 requirements:
   build:
